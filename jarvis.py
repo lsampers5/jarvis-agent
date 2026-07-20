@@ -4,6 +4,7 @@ from ddgs import DDGS
 # Calculate Function
 # Function
 def calculate(expression: str):
+    print(f"\n[DEBUG] Calculate tool called with the experession: '{expression}'\n")
     try:
         return eval(expression)
     except Exception as e:
@@ -66,7 +67,7 @@ while True:
     
     messages.append({"role": "user", "content": user_input})
     
-    response = ollama.chat(model="llama3.2", messages=messages, tools=[calculate_tool, internet_search_tool])
+    response = ollama.chat(model="qwen2.5:3b", messages=messages, tools=[calculate_tool, internet_search_tool])
     # Did the model ask for a tool?
     if response.message.tool_calls:
         # Yes - add models request to the conversation
