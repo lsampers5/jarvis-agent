@@ -27,4 +27,4 @@ def chat (request: ChatRequest):
         return {"reply": messages[-1]["content"]}
     except Exception as e:
         print(f"\n[SERVER ERROR] {type(e).__name__}: {e}\n")
-        return {"Reply": None}
+        return {"reply": "Sorry I had trouble generating a response."}
