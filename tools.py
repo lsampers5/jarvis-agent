@@ -1,14 +1,22 @@
 from ddgs import DDGS
+import ast
 
 # Calculate Function
 # Function
 def calculate(expression: str):
     print(f"\n[DEBUG] Calculate tool called with the experession: '{expression}'\n")
     try:
-        return eval(expression)
-    except Exception as e:
-        return f"Error: could not find expression '{expression}': {e}"
-
+        ALLOWED_NODES = (ast.Expression, ast.BinOp, ast.UnaryOp, ast.Constant, ast.Add, ast.Sub, ast.Mult, ast.Div, ast.Pow, ast.Mod, ast.USub, ast.UAdd)
+        parsed_expression = ast.parse(expression, mode="eval")
+        for node in ast.walk(parsed_expression):
+            if not isinstance(node, ALLOWED_NODES): # Check for everything that should be in the expression
+                return f"Error: Expression: '{expression}' contains disallowed operations."
+            if isinstance(node, ast.Constant) and not isinstance(node.value, (int, float)):
+                return f"Error: Expression: '{expression}' contains disallowed values."
+            
+        return eval(compile(parsed_expression, "<String>", "eval"))
+    except (SyntaxError, ValueError, ZeroDivisionError, TypeError) as e:
+        return f"Error: could not evaluate '{expression}': {e}"
 # Tool Description
 calculate_tool = {
     "type": "function",
